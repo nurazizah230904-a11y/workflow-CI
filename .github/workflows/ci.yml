@@ -9,25 +9,19 @@ jobs:
   train:
     runs-on: ubuntu-latest
     steps:
-    # 1. Ambil kode dari repo
     - name: Checkout code
       uses: actions/checkout@v3
 
-    # 2. Siapkan Python standar
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.9'
 
-    # 3. Install Library (Ini langkah "Belanja Bahan")
-    # PENTING: Masukkan semua library yang dipakai di file python Anda di sini
     - name: Install Dependencies
       run: |
-        pip install mlflow scikit-learn pandas numpy matplotlib
+        pip install mlflow scikit-learn pandas numpy matplotlib joblib openpyxl
 
-    # 4. Jalankan MLflow tanpa membuat env Conda baru
     - name: Run MLflow Project
       run: |
-        # Masuk ke folder MLProject
-        # Flag --no-conda artinya "gunakan python & library yang barusan di-install di atas"
-        mlflow run ./MLProject --no-conda
+        # PERBAIKAN PENTING: Gunakan --env-manager=local
+        mlflow run ./MLProject --env-manager=local
