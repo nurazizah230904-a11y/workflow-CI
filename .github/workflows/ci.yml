@@ -1,42 +1,33 @@
-name: MLflow CI Training
+name: Training Pipeline
 
 on:
   push:
-    branches: [ "main" ]
-  workflow_dispatch:
+    branches:
+      - main
 
 jobs:
   train:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+    # 1. Ambil kode dari repo
+    - name: Checkout code
+      uses: actions/checkout@v3
 
+    # 2. Siapkan Python standar
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v4
       with:
-        python-version: "3.10"
+        python-version: '3.9'
 
-    - name: Install dependencies
+    # 3. Install Library (Ini langkah "Belanja Bahan")
+    # PENTING: Masukkan semua library yang dipakai di file python Anda di sini
+    - name: Install Dependencies
       run: |
-        pip install mlflow pandas scikit-learn
+        pip install mlflow scikit-learn pandas numpy matplotlib
 
+    # 4. Jalankan MLflow tanpa membuat env Conda baru
     - name: Run MLflow Project
       run: |
-        mlflow run MLProject
-
-    - name: Login to Docker Hub
-      run: |
-        echo "${{ secrets.DOCKER_PASSWORD }}" | docker login \
-        -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-
-    - name: Build Docker Image
-      run: |
-        mlflow models build-docker \
-          -m "runs:/$(ls mlruns/*/* | head -n 1)/model" \
-          -n nurazizah230904/social-networks-ads-mlflow
-
-    - name: Push Docker Image
-      run: |
-        docker push nurazizah230904/social-networks-ads-mlflow
+        # Masuk ke folder MLProject
+        # Flag --no-conda artinya "gunakan python & library yang barusan di-install di atas"
+        mlflow run ./MLProject --no-conda
