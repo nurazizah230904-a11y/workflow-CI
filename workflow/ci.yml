@@ -1,37 +1,31 @@
-name: MLflow CI Training
+name: Training Pipeline
 
 on:
   push:
-    branches: [ "main" ]
-  workflow_dispatch:
+    branches:
+      - main
 
 jobs:
   train:
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v4
+    # 1. Ambil kode dari repo
+    - name: Checkout code
+      uses: actions/checkout@v3
 
+    # 2. Siapkan Python standar
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v4
       with:
-        python-version: "3.10"
+        python-version: '3.9'
 
-    - name: Install MLflow
+    # 3. Install Library (Ini langkah "Belanja Bahan")
+    - name: Install Dependencies
       run: |
-        pip install mlflow
+        pip install mlflow scikit-learn pandas numpy matplotlib
 
+    # 4. Jalankan MLflow tanpa membuat env Conda baru
     - name: Run MLflow Project
       run: |
-        mlflow run MLProject
-
-    - name: Save MLflow artifacts
-      run: |
-        mkdir artifacts
-        cp -r mlruns artifacts/
-
-    - name: Upload artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: mlflow-artifacts
-        path: artifacts/
+        # Masuk ke folder MLProject
+        mlflow run ./MLProject --no-conda
