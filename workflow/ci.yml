@@ -25,3 +25,7 @@ jobs:
       run: |
         # PERBAIKAN: Menggunakan flag baru untuk MLflow versi 2.0+
         mlflow run ./MLProject --env-manager=local
+        - name: Install Dependencies
+      run: |
+        # Saya tambahkan 'joblib' dan 'openpyxl' (untuk jaga-jaga)
+        pip install mlflow scikit-learn pandas numpy matplotlib joblib openpyxl
